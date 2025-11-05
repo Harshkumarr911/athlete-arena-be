@@ -1,5 +1,5 @@
-# Use OpenJDK 21 as the base image
-FROM openjdk:21-jdk-slim
+# Use OpenJDK 17 (LTS) as the base image - fully supported by Render
+FROM eclipse-temurin:17-jdk-jammy
 
 # Set working directory
 WORKDIR /app
