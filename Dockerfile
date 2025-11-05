@@ -1,4 +1,4 @@
-# Use OpenJDK 17 as base image
+# Use OpenJDK 17 (LTS) as the base image
 FROM eclipse-temurin:17-jdk-jammy AS build
 
 # Set working directory
@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy Maven wrapper and pom.xml
 COPY pom.xml mvnw ./
 COPY .mvn .mvn
+
+# ✅ Give execute permission to mvnw
+RUN chmod +x mvnw
 
 # Download dependencies
 RUN ./mvnw dependency:go-offline
