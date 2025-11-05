@@ -1,14 +1,27 @@
-# Use OpenJDK 17 (LTS) as the base image - fully supported by Render
-FROM eclipse-temurin:17-jdk-jammy
+# Use OpenJDK 17 as base image
+FROM eclipse-temurin:17-jdk-jammy AS build
 
 # Set working directory
 WORKDIR /app
 
-# Copy the JAR file into the container
-COPY target/athletearena-0.0.1-SNAPSHOT.jar app.jar
+# Copy Maven wrapper and pom.xml
+COPY pom.xml mvnw ./
+COPY .mvn .mvn
 
-# Expose the port your Spring Boot app runs on
+# Download dependencies
+RUN ./mvnw dependency:go-offline
+
+# Copy the rest of the project and build it
+COPY src ./src
+RUN ./mvnw clean package -DskipTests
+
+# Run stage
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+
+# Copy built JAR from the previous stage
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose port and run app
 EXPOSE 8080
-
-# Run the JAR file
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
