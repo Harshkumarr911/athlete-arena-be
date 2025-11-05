@@ -1,0 +1,11 @@
+# Use official OpenJDK image
+FROM openjdk:17-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy build jar
+COPY target/athletearena-0.0.1-SNAPSHOT.jar app.jar
+
+# Run jar file
+ENTRYPOINT ["java","-jar","/app/app.jar"]
